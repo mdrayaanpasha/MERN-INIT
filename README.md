@@ -23,7 +23,7 @@
     <li>Create the folder structure for your project.</li>
     <li>Initialize the frontend with React using Vite.</li>
     <li>Set up a basic Express server.</li>
-    <li>Create a simple homepage component in React.</li>
+    <li>Create a simple homepage component in React with tailwind configration.</li>
     <li>Set up a Git repository and commit the initial files.</li>
 </ul>
 
