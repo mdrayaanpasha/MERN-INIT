@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     printf("\n============================================================================================\n");
     printf("\n\t\t\t\t\t  Making frondend & backend folders....n\n");
     printf("\n============================================================================================\n");
-    
+
     system("mkdir frontend && mkdir backend");
 
     printf("\n============================================================================================\n");
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     printf("\n============================================================================================\n");
     printf("\n\t\t\t\t\t  Removing unncessary CSS & Creating Components & imgs folder in React....n\n");
     printf("\n============================================================================================\n");
-    system("del frontend\\src\\index.css");
+
     system("del frontend\\src\\App.css");
 
     // Write boilerplate code to App.jsx
@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
         "import React from 'react';\n"
         "import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';\n"
         "import Home from './components/Home';\n"
+        "import './index.css';\n"
         "\n"
         "const App = () => {\n"
         "    return (\n"
@@ -67,32 +68,12 @@ int main(int argc, char *argv[]) {
 
     system("cd frontend\\src\\ && mkdir components");
 
-    file = fopen("frontend\\src\\components\\Home.jsx", "w");
-    if (file == NULL) {
-        perror("Error opening Home.jsx");
-        return 1;
-    }
 
-    const char *home_code =
-        "import React from 'react';\n"
-        "\n"
-        "const Home = () => {\n"
-        "    return (\n"
-        "        <div>\n"
-        "            <h1>Welcome to the Home Page!</h1>\n"
-        "        </div>\n"
-        "    );\n"
-        "};\n"
-        "\n"
-        "export default Home;\n";
-
-    fputs(home_code, file);
-    fclose(file);
 
 
     system("cd frontend\\src\\assets && mkdir css && mkdir imgs");
 
-    //another Last thing left is to remove css import from main that could be done by: 
+    //another Last thing left is to remove css import from main that could be done by:
 
     file = fopen("frontend\\src\\main.jsx", "w");
     if (file == NULL) {
@@ -104,6 +85,8 @@ int main(int argc, char *argv[]) {
         "import { StrictMode } from 'react';\n"
         "import { createRoot } from 'react-dom/client';\n"
         "import App from './App.jsx';\n"
+        "import './index.css';\n"
+
         "\n"
         "createRoot(document.getElementById('root')).render(\n"
         "  <StrictMode>\n"
@@ -115,26 +98,124 @@ int main(int argc, char *argv[]) {
     fclose(file);
 
 
+    //last for now: tailwind in react.
+
+    system("cd frontend && npm install -D tailwindcss && npx tailwindcss init && npm i tailwindcss ");
+
+    //now lets change the the tailwind configuration
+    FILE *fileP = fopen("frontend\\tailwind.config.js", "w");
+    if (fileP == NULL) {
+        perror("Error opening frontend/tailwind.config.js");
+        return 1;
+    }
+
+    const char *tailwind_config_content =
+        "/** @type {import('tailwindcss').Config} */\n"
+        "export default {\n"
+        "content: [\n"
+        "    './src/**/*.{js,jsx,ts,tsx}',\n"
+        "],\n"
+        "theme: {\n"
+        "    extend: {},\n"
+        "},\n"
+        "plugins: [],\n"
+        "}\n";
+
+    fputs(tailwind_config_content,fileP);
+    fclose(fileP);
+
+
+    //lets also make those postcss configration once for all.
+
+    system("cd frontend && npm install -D postcss autoprefixer");
+    FILE *postcss_file = fopen("frontend\\postcss.config.js", "w");
+    if (postcss_file == NULL) {
+        perror("Error opening postcss.config.js");
+        return 1;
+    }
+
+    const char *postcss_config_content =
+        "export default {\n"
+        "  plugins: {\n"
+        "    tailwindcss: {},\n"
+        "    autoprefixer: {},\n"
+        "  },\n"
+        "};\n";
+
+    fputs(postcss_config_content, postcss_file);
+    fclose(postcss_file);
+
+
+
+    //now lets add tailwind thing in index.css
+
+
+
+    fileP = fopen("frontend\\src\\index.css", "w");
+    if (fileP == NULL) {
+        perror("Error opening frontend/src/index.css");
+        return 1;
+    }
+
+    const char *index_css_content =
+    "@tailwind base;\n"
+    "@tailwind components;\n"
+    "@tailwind utilities;\n";
+
+    fputs(index_css_content,fileP);
+    fclose(fileP);
+
+
+    //lets make boilerplate of it in homepage:
+
+    file = fopen("frontend\\src\\components\\Home.jsx", "w");
+    if (file == NULL) {
+        perror("Error opening Home.jsx");
+        return 1;
+    }
+
+    const char *home_code =
+        "import React from 'react';\n"
+        "\n"
+        "const Home = () => {\n"
+        "    return (\n"
+        "    <h1 className='text-3xl font-bold underline'> Hello world! </h1> \n"
+        "    );\n"
+        "};\n"
+        "\n"
+        "export default Home;\n";
+
+    fputs(home_code, file);
+    fclose(file);
+
+
+
+
+
+
+
+
+
     printf("\n============================================================================================\n");
     printf("\n\t\t\t\t\t  Done With Frontend stuff, workin on backend.......n\n");
     printf("\n============================================================================================\n");
 
 
 
-    
+
     printf("\n============================================================================================\n");
     printf("\n\t\t\t\t\t  creating DataBase & changing package.json....n\n");
     printf("\n============================================================================================\n");
     system("mkdir backend\\DB");
 
-   
-    FILE *fileP = fopen("backend/package.json", "w");
+
+    fileP = fopen("backend\\package.json", "w");
     if (fileP == NULL) {
         perror("Error opening backend/package.json");
         return 1;
     }
 
-    const char *package_json_content = 
+    const char *package_json_content =
         "{\n"
         "  \"name\": \"backend\",\n"
         "  \"version\": \"1.0.0\",\n"
@@ -230,7 +311,7 @@ fclose(file);
     }
 
     char create_repo_command[256];
-    snprintf(create_repo_command, sizeof(create_repo_command), 
+    snprintf(create_repo_command, sizeof(create_repo_command),
              "gh repo create %s --public --source=. --remote=origin --push", argv[1]);
     status = system(create_repo_command);
     if (status != 0) {
@@ -244,7 +325,7 @@ fclose(file);
     } else {
         status = system("git push -u origin master");
     }
-    
+
     if (status != 0) {
         perror("Failed to push to GitHub");
         return 1;
